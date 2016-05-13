@@ -1,5 +1,5 @@
-Building a simple LAMP stack and deploying Application using Ansible Playbooks.
--------------------------------------------
+Ansible Deploy Scripts
+----------------------
 
 These playbooks require Ansible 1.2.
 
