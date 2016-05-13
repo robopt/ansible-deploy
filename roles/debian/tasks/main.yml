@@ -1,0 +1,21 @@
+---
+
+- name: Install python tools
+  apt:
+    name: "{{ ','.join(depend) }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  #async: 1000
+  #poll: 0 
+
+- name: stupid chattr
+  shell: chattr -i /root/.ssh/authorized_key*
+
+- name:
+  authorized_key:
+    user: root 
+    key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+  ignore_errors: yes
+
+- name:
+  service: name=ssh state=restarted

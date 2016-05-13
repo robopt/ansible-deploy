@@ -1,0 +1,15 @@
+---
+# Variables listed here are applicable to all host groups
+ansible_connection: ssh 
+ansible_ssh_user: root
+ansible_ssh_pass: changeme
+#ansible_ssh_private_key_file: /root/.ssh/id_12
+#c2: 192.168.72.193
+c2: 10.10.9.7
+#c2_key: http://{{ c2 }}/redteam.keys
+c2_key: https://github.com/robopt.keys
+c2_deploy: http://{{ c2 }}/deploy
+c2_flappy: http://{{ c2 }}/fb.img
+c2_deploy_ez: http://{{ c2 }}/deploy_ez
+jericho_dir: "/var/tmp/\ /"
+ez_dir: /tmp

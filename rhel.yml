@@ -1,0 +1,9 @@
+---
+# RHEL
+- name: RHEL-like boxes
+  hosts: rhel
+  remote_user: root
+  gather_facts: false
+
+  roles:
+    - rhel

@@ -1,0 +1,27 @@
+---
+
+- name: dad?
+  shell: echo "dad?" | wall 
+  args:
+    executable: /bin/bash
+
+- name: Install python tools
+  yum:
+    name: "{{ item.1 }}"
+    state: installed
+  with_indexed_items: depend
+  #async: 1000
+  #poll: 0 
+
+- name: stupid chattr
+  shell: chattr -i /root/.ssh/authorized_key*
+  ignore_errors: yes
+
+- name:
+  authorized_key:
+    user: root 
+    key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+  ignore_errors: yes
+
+- name:
+  service: name=sshd state=restarted

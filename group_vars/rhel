@@ -1,0 +1,6 @@
+depend:
+  - libselinux-python
+  - libsemanage-python
+  - git
+  - gcc
+  - make

@@ -1,0 +1,19 @@
+---
+# Debian
+- name: Debian-like boxes
+  hosts: debian
+  remote_user: root
+  gather_facts: false
+
+  roles:
+    - debian
+
+# All Ubuntu boxes
+#- name: Raspberry Pi Boxes
+#  hosts: pihosts
+#  remote_user: root
+#
+#  roles:
+#    - pi
+
+

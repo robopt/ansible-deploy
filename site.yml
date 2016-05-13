@@ -1,0 +1,12 @@
+---
+# All Linux nodes
+- name: apply common configuration to all nodes
+  hosts: all
+  remote_user: root
+  gather_facts: false
+
+  roles:
+    - common
+
+- include: debian.yml
+- include: rhel.yml
